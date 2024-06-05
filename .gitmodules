@@ -1,0 +1,3 @@
+[submodule "plugins/caps2esc"]
+	path = plugins/caps2esc
+	url = git@github.com:MEhrn00/interception-tools-caps2esc.git

@@ -1,4 +1,4 @@
-add_executable(udevmon udevmon.cpp)
+add_executable(udevmon main.cpp)
 target_include_directories(udevmon PRIVATE ${LIBEVDEV_INCLUDE_DIRS})
 target_compile_options(udevmon PRIVATE -Wall -Wextra -pedantic -std=c++11)
 target_link_libraries(udevmon evdev udev yaml-cpp)

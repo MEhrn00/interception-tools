@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.5)
 
 project(interception-tools)
 
+option(BUILD_CAPS2ESC "Build caps2esc plugin" ON)
+
+include(cmake/git_submodules.cmake)
+
+if(${BUILD_CAPS2ESC})
+  message(STATUS "Build caps2esc plugin")
+  fetch_submodule(plugins/caps2esc)
+  add_subdirectory(plugins/caps2esc)
+endif()
+
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 

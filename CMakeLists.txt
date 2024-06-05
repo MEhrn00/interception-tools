@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(interception-tools)
 
 option(BUILD_CAPS2ESC "Build caps2esc plugin" ON)
+option(INSTALL_SYSTEMD_SERVICE "Install udevmon systemd service file" ON)
 
 include(cmake/git_submodules.cmake)
 
@@ -19,7 +20,9 @@ find_package(PkgConfig)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
 add_subdirectory(src)
+add_subdirectory(servicefiles)
 
 string(CONCAT CONFIGURATION_MSG "Configuration options:\n"
-              "\tBUILD_CAPS2ESC:\t${BUILD_CAPS2ESC}" "\n")
+              "\tBUILD_CAPS2ESC:          \t${BUILD_CAPS2ESC}\n"
+              "\tINSTALL_SYSTEMD_SERVICE: \t${INSTALL_SYSTEMD_SERVICE}" "\n")
 message(STATUS ${CONFIGURATION_MSG})

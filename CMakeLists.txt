@@ -19,8 +19,7 @@ find_package(Threads REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
-add_subdirectory(src)
-add_subdirectory(servicefiles)
+add_subdirectory(tools)
 
 string(CONCAT CONFIGURATION_MSG "Configuration options:\n"
               "\tBUILD_CAPS2ESC:          \t${BUILD_CAPS2ESC}\n"

@@ -25,13 +25,13 @@ int main(int argc, char *argv[]) {
 
     for (int opt; (opt = getopt(argc, argv, "hg")) != -1;) {
         switch (opt) {
-            case 'h':
-                return print_usage(stdout, argv[0]), EXIT_SUCCESS;
-            case 'g':
-                if (grab)
-                    break;
-                grab = 1;
-                continue;
+        case 'h':
+            return print_usage(stdout, argv[0]), EXIT_SUCCESS;
+        case 'g':
+            if (grab)
+                break;
+            grab = 1;
+            continue;
         }
 
         return print_usage(stderr, argv[0]), EXIT_FAILURE;
@@ -57,8 +57,7 @@ int main(int argc, char *argv[]) {
     for (;;) {
         struct input_event input;
         int rc = libevdev_next_event(
-            dev, LIBEVDEV_READ_FLAG_NORMAL | LIBEVDEV_READ_FLAG_BLOCKING,
-            &input);
+            dev, LIBEVDEV_READ_FLAG_NORMAL | LIBEVDEV_READ_FLAG_BLOCKING, &input);
 
         while (rc == LIBEVDEV_READ_STATUS_SYNC)
             rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_SYNC, &input);

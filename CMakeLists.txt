@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(interception-tools)
+project(
+  interception-tools
+  VERSION 0.6.8
+  DESCRIPTION
+    "A minimal composable infrastructure on top of libudev and libevdev"
+  HOMEPAGE_URL "https://github.com/MEhrn00/interception-tools"
+  LANGUAGES CXX)
 
 option(BUILD_CAPS2ESC "Build caps2esc plugin" ON)
 option(INSTALL_SYSTEMD_SERVICE "Install udevmon systemd service file" ON)

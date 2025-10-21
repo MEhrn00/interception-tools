@@ -10,5 +10,5 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/udevmon.service.in"
 
 if(${INSTALL_SYSTEMD_SERVICE})
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/udevmon.service"
-          DESTINATION "/usr/lib/systemd/system")
+          DESTINATION "lib/systemd/system")
 endif()

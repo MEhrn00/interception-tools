@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(
   interception-tools
@@ -10,7 +10,7 @@ project(
 
 option(INSTALL_SYSTEMD_SERVICE "Install udevmon systemd service file" ON)
 
-find_package(Boost REQUIRED)
+find_package(Boost CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 find_package(PkgConfig)

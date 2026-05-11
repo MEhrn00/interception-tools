@@ -5,7 +5,7 @@ After=systemd-udev-settle.service
 Documentation=man:udev(7)
 
 [Service]
-ExecStart=@CMAKE_INSTALL_PREFIX@/bin/udevmon
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/udevmon
 Nice=-20
 Restart=on-failure
 OOMScoreAdjust=-1000

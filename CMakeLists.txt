@@ -10,47 +10,59 @@ project(
 
 option(INSTALL_SYSTEMD_SERVICE "Install udevmon systemd service file" ON)
 
-find_package(Boost CONFIG REQUIRED)
-find_package(Threads REQUIRED)
+include(GNUInstallDirs)
 
-find_package(PkgConfig)
-pkg_check_modules(LIBEVDEV REQUIRED libevdev)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_executable(intercept src/intercept.cpp)
-target_include_directories(intercept PRIVATE ${LIBEVDEV_INCLUDE_DIRS})
-target_compile_options(intercept PRIVATE -Wall -Wextra)
-target_link_libraries(intercept evdev)
-
-
-add_executable(mux src/mux.cpp)
-target_include_directories(mux PRIVATE ${Boost_INCLUDE_DIRS})
-target_compile_options(mux PRIVATE -Wall -Wextra -pedantic -std=c++11
-                                   -DBOOST_DATE_TIME_NO_LIB)
-target_link_libraries(mux Threads::Threads rt)
-
-
-add_executable(udevmon src/udevmon.cpp)
-target_include_directories(udevmon PRIVATE ${LIBEVDEV_INCLUDE_DIRS})
-target_compile_options(udevmon PRIVATE -Wall -Wextra -pedantic -std=c++11)
-target_link_libraries(udevmon evdev udev yaml-cpp)
-
-add_executable(uinput src/uinput.cpp)
-target_include_directories(uinput PRIVATE ${LIBEVDEV_INCLUDE_DIRS})
-target_compile_options(uinput PRIVATE -Wall -Wextra -pedantic -std=c++11)
-target_link_libraries(uinput evdev udev yaml-cpp)
-
-
-install(TARGETS intercept mux udevmon uinput RUNTIME DESTINATION bin)
-
-if(INSTALL_SYSTEMD_SERVICE)
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/udevmon.service.in"
-                   "${CMAKE_CURRENT_BINARY_DIR}/etc/udevmon.service" @ONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/udevmon.service"
-          DESTINATION "lib/systemd/system")
+if(NOT PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  file(GENERATE OUTPUT .gitignore CONTENT "# CMake generated .gitignore\n*\n")
 endif()
 
+if(CMAKE_GENERATOR MATCHES "^Ninja" AND NOT DEFINED CMAKE_COLOR_DIAGNOSTICS)
+  set(CMAKE_COLOR_DIAGNOSTICS ON)
+endif()
 
+find_package(Boost CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
+find_package(Libevdev REQUIRED)
+find_package(Libudev REQUIRED)
+find_package(Threads REQUIRED)
 
-string(CONCAT CONFIGURATION_MSG "Configuration options:\n"
-              "\tINSTALL_SYSTEMD_SERVICE: \t${INSTALL_SYSTEMD_SERVICE}" "\n")
-message(STATUS ${CONFIGURATION_MSG})
+add_executable(intercept src/intercept.cpp)
+target_compile_features(intercept PRIVATE cxx_std_11)
+target_compile_options(intercept PRIVATE -Wall -Wextra)
+target_link_libraries(intercept Libevdev::Libevdev)
+
+add_executable(mux src/mux.cpp)
+target_compile_features(mux PRIVATE cxx_std_11)
+target_compile_definitions(mux PRIVATE BOOST_DATE_TIME_NO_LIB)
+target_compile_options(mux PRIVATE -Wall -Wextra)
+target_link_libraries(mux Boost::headers Threads::Threads rt)
+
+add_executable(udevmon src/udevmon.cpp)
+target_compile_features(udevmon PRIVATE cxx_std_11)
+target_compile_options(udevmon PRIVATE -Wall -Wextra -pedantic)
+target_link_libraries(udevmon Libevdev::Libevdev Libudev::Libudev yaml-cpp::yaml-cpp)
+
+add_executable(uinput src/uinput.cpp)
+target_compile_features(uinput PRIVATE cxx_std_11)
+target_compile_options(uinput PRIVATE -Wall -Wextra -pedantic)
+target_link_libraries(uinput Libevdev::Libevdev Libudev::Libudev yaml-cpp::yaml-cpp)
+
+install(
+  TARGETS intercept mux udevmon uinput
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(INSTALL_SYSTEMD_SERVICE)
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/conf/udevmon.service.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/conf/udevmon.service"
+    @ONLY
+  )
+
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/conf/udevmon.service"
+    DESTINATION "lib/systemd/system"
+  )
+endif()
